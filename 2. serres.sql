@@ -1,52 +1,130 @@
-1. Lister toutes les plantes, avec affichage de tous les champs.
+-- 1.
+select *
+from plante
 
-SELECT *
-FROM PLANTE
+-- 2.
+select noplante, nomplante
+from plante
+where nomplante like 'R%'
 
-2. Lister les plantes (n°, nom) dont le nom commence par R
+-- 3.
+select distinct(nomplante)
+from plante
 
-SELECT nomplante
-FROM PLANTE
-WHERE nomplante LIKE 'R%'
+-- 4.
+select nomplante
+from plante
+where noregion = 6
 
-3. Lister les plantes (noms), sans doublon
+-- 5.
+select nomregion
+from region
+order by nomregion desc
 
-SELECT DISTINCT nomplante
-FROM PLANTE
+-- 6.
+select count(*) as "Nombre de serres"
+from serre
 
-4. Lister les plantes (noms) de la région n°6
+-- 7.
+select count(*) as "Nombre de bananiers"
+from plante
+where nomplante ='Bananier'
 
-SELECT nomplante
-FROM PLANTE
-WHERE noregion = 6;
+-- 8.
+select noregion, count(*) as "Nombre de plantes"
+from plante
+group by noregion
 
-5. Lister les régions (noms) par ordre alphabétique descendant
+-- 9.
+select noregion, count(*) as "Nombre de plantes"
+from plante
+group by noregion
+having count(*) > 2
 
-SELECT nomregion
-FROM REGION
-ORDER BY nomregion DESC;
+-- 10.
+select *
+from plante p
+inner join region r on (p.noregion = r. noregion)
 
-6. Afficher le nombre de serres dans le jardin (= la base) (avec colonne 'renommée')
+-- 11
+select nomregion, nomplante
+from region r
+inner join plante p on (r.noregion = p.noregion)
+order by nomregion, nomplante ASC
 
-SELECT count(*) as "Nombre de serres"
-FROM SERRE
+-- 12
+select nomplante
+from plante p
+inner join emplacement e on (p.noplante = e.noplante)
+where noserre = 3
 
-7. Afficher le nombre de bananier dans le jardin (avec colonne 'renommée')
+-- 13
+select nomplante, nomregion
+from region r
+inner join plante p on (r.noregion = p.noregion)
+where nomregion like 'Afrique%'
+order by nomplante
 
-SELECT count(*) as "Nombre de bananier"
-FROM PLANTE
-WHERE nomplante='Bananier'
+-- 14
+select p.noplante, nomplante
+from serre s
+inner join emplacement e on (s.noserre= e.noserre)
+inner join plante p on (e.noplante= p.noplante)
+where nomserre ='Exoticus'
 
-8. Afficher le nombre de plantes pour chaque région (n° région), dans la base
+-- 15
 
-SELECT noregion, count(*) as "Nombre de plantes"
-FROM PLANTE
-GROUP BY noregion;
+select count(*) as "Nombre de plantes européennes"
+from plante p
+inner join region r on (p.noregion = r.noregion)
+where nomregion = 'Europe'
 
-9. Lister les régions (n°) représentées par plus de 2 plantes dans le jardin (HAVING)
+-- 16
+select p.noregion, nomregion, count(*)
+from plante p
+inner join region r on (p.noregion = r.noregion)
+group by p.noregion, nomregion
+having count(*) >= 2
 
-SELECT noregion, count(*) as "Nombre de plantes"
-FROM PLANTE
-GROUP BY noregion
-HAVING count(*) > 2;
+--17
+select avg(frequence)
+from serre s
+inner join vaporisation v on (s.noserre = v.noserre)
+where nomserre = 'Georges Bouvet'
 
+--18
+
+select v.noserre, nomserre, avg(frequence)
+from serre s
+inner join vaporisation v on (s.noserre = v.noserre)
+group by v.noserre, nomserre
+
+--19
+select v.noserre, nomserre, avg(frequence)
+from serre s
+inner join vaporisation v on (s.noserre = v.noserre)
+group by v.noserre, nomserre
+having avg(frequence) > 13
+
+--20
+select nomplante
+from plante
+where noplante not in 
+(select p.noplante
+from serre s
+inner join emplacement e on (s.noserre = e.noserre)
+inner join plante p on (e.noplante = p.noplante)
+where nomserre = 'Exoticus'
+)
+
+--21
+select r.noregion, nomregion, count(noplante)
+from region r
+left outer join plante p on (r.noregion = p.noregion)
+group by r.noregion, nomregion 
+
+--22
+SELECT SERRE.noserre as "n°Serre", nomserre as "Nom Serre", COUNT(noplante) as Nombre
+FROM SERRE 
+LEFT JOIN EMPLACEMENT ON (SERRE.noserre = EMPLACEMENT.noserre)
+GROUP BY SERRE.noserre, nomserre
