@@ -76,3 +76,26 @@ SELECT LibelleType, SUM(Montant)
 FROM TYPESUBVENTION
 LEFT OUTER JOIN ENVELOPPE ON (TYPESUBVENTION.CodeType = ENVELOPPE.CodeType)
 GROUP BY TYPESUBVENTION.LibelleType
+
+
+-- 13. Afficher le nom du pays et la population du pays ayant la plus grande population en 2006
+SELECT NomPays, Population
+FROM PAYS
+INNER JOIN RENSEIGNEMENT ON (RENSEIGNEMENT.NoPays=PAYS.NoPays)
+WHERE Annee=2006
+AND Population = 
+    (SELECT Max(Population)
+    FROM RENSEIGNEMENT
+    WHERE Annee=2006
+    )
+
+-- 14. Ajouter la région Pays de Galles (en Grande-Bretagne) dans la table REGION
+INSERT INTO REGION VALUES (30, 'Pays de Galles', 2);
+
+-- 15. Ajouter la région Poméranie (en Pologne) dans la table REGION
+INSERT INTO PAYS VALUES (6, 'Pologne','Varsovie', 4);
+INSERT INTO REGION VALUES (31, 'Poméranie', 6);
+
+-- 16. En 2005 la population de la Pologne était de 37 millions, en 2006 de 37.5. Les taux de croissance étaient respectivement de 3 et 5. Faites les insertions nécessaires dans la base de sorte que ces informations soient stockées.
+INSERT INTO RENSEIGNEMENT VALUES (6, 2005,3, 37);
+INSERT INTO RENSEIGNEMENT VALUES (6, 2006, 5, 37.5); 
